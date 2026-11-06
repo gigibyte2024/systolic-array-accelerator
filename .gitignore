@@ -1,0 +1,11 @@
+# Compiled Verilog files
+mac_test
+*.out
+*.vvp
+
+# Temporary files
+.DS_Store
+*.log
+
+# Editor files
+.vscode/

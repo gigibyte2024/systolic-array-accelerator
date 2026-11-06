@@ -1,5 +1,5 @@
 $date
-	Fri Nov  6 14:44:24 2026
+	Fri Nov  6 14:55:11 2026
 $end
 $version
 	Icarus Verilog
@@ -23,31 +23,39 @@ $var wire 1 & clk $end
 $var wire 1 ' en $end
 $var wire 1 ( rst $end
 $var wire 32 + acc [31:0] $end
-$var reg 8 , a_out [7:0] $end
-$var reg 8 - b_out [7:0] $end
+$var parameter 32 , ACC_WIDTH $end
+$var parameter 32 - DATA_WIDTH $end
+$var reg 8 . a_out [7:0] $end
+$var reg 8 / b_out [7:0] $end
 $scope module mac_inst $end
-$var wire 8 . a [7:0] $end
-$var wire 8 / b [7:0] $end
+$var wire 8 0 a [7:0] $end
+$var wire 8 1 b [7:0] $end
 $var wire 1 & clk $end
 $var wire 1 ' en $end
 $var wire 1 ( rst $end
-$var wire 16 0 product [15:0] $end
-$var reg 32 1 acc [31:0] $end
+$var wire 16 2 product [15:0] $end
+$var parameter 32 3 ACC_WIDTH $end
+$var parameter 32 4 DATA_WIDTH $end
+$var reg 32 5 acc [31:0] $end
 $upscope $end
 $upscope $end
 $upscope $end
 $enddefinitions $end
 $comment Show the parameter values. $end
 $dumpall
+b1000 4
+b100000 3
+b1000 -
+b100000 ,
 $end
 #0
 $dumpvars
-bx 1
+bx 5
+b0 2
+b0 1
 b0 0
-b0 /
-b0 .
-bx -
-bx ,
+bx /
+bx .
 bx +
 b0 *
 b0 )
@@ -63,82 +71,82 @@ $end
 #5000
 b0 "
 b0 +
-b0 1
+b0 5
 b0 !
-b0 -
+b0 /
 b0 #
-b0 ,
+b0 .
 1&
 #10000
-b1100 0
+b1100 2
 b100 %
 b100 *
-b100 /
+b100 1
 b11 $
 b11 )
-b11 .
+b11 0
 0&
 1'
 0(
 #15000
 b100 !
-b100 -
+b100 /
 b11 #
-b11 ,
+b11 .
 b1100 "
 b1100 +
-b1100 1
+b1100 5
 1&
 #20000
 b101 %
 b101 *
-b101 /
-b1010 0
+b101 1
+b1010 2
 b10 $
 b10 )
-b10 .
+b10 0
 0&
 #25000
 b10110 "
 b10110 +
-b10110 1
+b10110 5
 b101 !
-b101 -
+b101 /
 b10 #
-b10 ,
+b10 .
 1&
 #30000
 b11 %
 b11 *
-b11 /
-b1111111111111010 0
+b11 1
+b1111111111111010 2
 b11111110 $
 b11111110 )
-b11111110 .
+b11111110 0
 0&
 #35000
 b11 !
-b11 -
+b11 /
 b11111110 #
-b11111110 ,
+b11111110 .
 b10000 "
 b10000 +
-b10000 1
+b10000 5
 1&
 #40000
 b10 %
 b10 *
-b10 /
-b1110 0
+b10 1
+b1110 2
 b111 $
 b111 )
-b111 .
+b111 0
 0'
 0&
 #45000
 b10 !
-b10 -
+b10 /
 b111 #
-b111 ,
+b111 .
 1&
 #46000

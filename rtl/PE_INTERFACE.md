@@ -42,3 +42,35 @@
 
 ## Integration Note
 This is the proposed PE interface. Confirm signal names, forwarding timing and control behaviour with the systolic array designer before final integration.
+
+
+## Parameterisation and Verification
+
+### Configurable Parameters
+
+The Processing Element supports configurable data and accumulator widths.
+
+| Parameter | Default | Description |
+|---|---:|---|
+| DATA_WIDTH | 8 | Width of signed input and forwarded data |
+| ACC_WIDTH | 32 | Width of signed accumulator |
+
+The PE passes these parameters to its internal MAC unit.
+
+### Verification Results
+
+The following tests were performed:
+
+1. MAC unit functional test — PASS
+2. Processing Element functional test — PASS
+3. PE stress test — PASS
+4. 16-bit PE parameterisation test — PASS
+5. Signed multiplication and accumulation — PASS
+6. Data forwarding test — PASS
+7. 32-bit accumulator overflow test — PASS
+
+### Overflow Behaviour
+
+The accumulator uses fixed-width signed arithmetic.
+
+When the mathematical result exceeds the signed 32-bit range, the result wraps around according to two's complement arithmetic. Saturation and overflow protection are not implemented.

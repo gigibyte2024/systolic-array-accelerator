@@ -13,3 +13,8 @@ mac_test
 # Compiled simulation executables
 pe_test
 pe_stress
+
+# Additional simulation executables
+mac_parameter_test
+pe_parameter_test
+pe_overflow_test

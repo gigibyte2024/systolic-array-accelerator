@@ -74,3 +74,17 @@ The following tests were performed:
 The accumulator uses fixed-width signed arithmetic.
 
 When the mathematical result exceeds the signed 32-bit range, the result wraps around according to two's complement arithmetic. Saturation and overflow protection are not implemented.
+
+### Back-to-Back MAC Verification
+
+A dedicated testbench was created to verify consecutive MAC operations.
+
+Test sequence:
+- 3 × 4 = 12
+- 2 × 5 + 12 = 22
+- (-2) × 3 + 22 = 16
+- Disable MAC and verify accumulator holds at 16
+- Verify data forwarding while MAC is disabled
+- Re-enable MAC and calculate 1 × 10 + 16 = 26
+
+Result: All six checks passed.

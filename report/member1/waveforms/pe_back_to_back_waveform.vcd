@@ -1,0 +1,182 @@
+$date
+	Fri Nov  6 20:16:42 2026
+$end
+$version
+	Icarus Verilog
+$end
+$timescale
+	1ps
+$end
+$scope module tb_pe_back_to_back $end
+$var wire 8 ! b_out [7:0] $end
+$var wire 32 " acc [31:0] $end
+$var wire 8 # a_out [7:0] $end
+$var reg 8 $ a_in [7:0] $end
+$var reg 8 % b_in [7:0] $end
+$var reg 1 & clk $end
+$var reg 1 ' en $end
+$var reg 1 ( rst $end
+$scope module uut $end
+$var wire 8 ) a_in [7:0] $end
+$var wire 8 * b_in [7:0] $end
+$var wire 1 & clk $end
+$var wire 1 ' en $end
+$var wire 1 ( rst $end
+$var wire 32 + acc [31:0] $end
+$var parameter 32 , ACC_WIDTH $end
+$var parameter 32 - DATA_WIDTH $end
+$var reg 8 . a_out [7:0] $end
+$var reg 8 / b_out [7:0] $end
+$scope module mac_inst $end
+$var wire 8 0 a [7:0] $end
+$var wire 8 1 b [7:0] $end
+$var wire 1 & clk $end
+$var wire 1 ' en $end
+$var wire 1 ( rst $end
+$var wire 16 2 product [15:0] $end
+$var parameter 32 3 ACC_WIDTH $end
+$var parameter 32 4 DATA_WIDTH $end
+$var reg 32 5 acc [31:0] $end
+$upscope $end
+$upscope $end
+$scope task check_acc $end
+$var reg 32 6 expected [31:0] $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+$comment Show the parameter values. $end
+$dumpall
+b1000 4
+b100000 3
+b1000 -
+b100000 ,
+$end
+#0
+$dumpvars
+bx 6
+bx 5
+b0 2
+b0 1
+b0 0
+bx /
+bx .
+bx +
+b0 *
+b0 )
+1(
+0'
+0&
+b0 %
+b0 $
+bx #
+bx "
+bx !
+$end
+#5000
+b0 "
+b0 +
+b0 5
+b0 !
+b0 /
+b0 #
+b0 .
+1&
+#10000
+b1100 2
+b100 %
+b100 *
+b100 1
+b11 $
+b11 )
+b11 0
+1'
+0(
+0&
+#15000
+b100 !
+b100 /
+b11 #
+b11 .
+b1100 "
+b1100 +
+b1100 5
+1&
+#16000
+b1100 6
+#20000
+b101 %
+b101 *
+b101 1
+b1010 2
+b10 $
+b10 )
+b10 0
+0&
+#25000
+b10110 "
+b10110 +
+b10110 5
+b101 !
+b101 /
+b10 #
+b10 .
+1&
+#26000
+b10110 6
+#30000
+b11 %
+b11 *
+b11 1
+b1111111111111010 2
+b11111110 $
+b11111110 )
+b11111110 0
+0&
+#35000
+b11 !
+b11 /
+b11111110 #
+b11111110 .
+b10000 "
+b10000 +
+b10000 5
+1&
+#36000
+b10000 6
+#40000
+b101 %
+b101 *
+b101 1
+b100011 2
+b111 $
+b111 )
+b111 0
+0'
+0&
+#45000
+b101 !
+b101 /
+b111 #
+b111 .
+1&
+#50000
+b1010 %
+b1010 *
+b1010 1
+b1010 2
+b1 $
+b1 )
+b1 0
+1'
+0&
+#55000
+b1010 !
+b1010 /
+b1 #
+b1 .
+b11010 "
+b11010 +
+b11010 5
+1&
+#56000
+b11010 6

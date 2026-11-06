@@ -18,3 +18,7 @@ pe_stress
 mac_parameter_test
 pe_parameter_test
 pe_overflow_test
+# Additional integration test executables
+pe_2x2_test
+pe_back_to_back
+systolic_2x2_test

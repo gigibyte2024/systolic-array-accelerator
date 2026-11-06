@@ -116,3 +116,32 @@ B values: 5, 7
 Result: All forwarding and accumulator checks passed.
 
 Waveform: simulation/pe_2x2_waveform.vcd
+
+## Cycle-by-Cycle 2x2 Matrix Multiplication
+
+A cycle-by-cycle 2x2 matrix multiplication testbench was developed.
+
+### Input Matrices
+
+A = [1 2]
+    [3 4]
+
+B = [5 7]
+    [6 8]
+
+### Expected Output
+
+C = [17 23]
+    [39 53]
+
+### Verification
+- Staggered matrix input delivery
+- Registered horizontal and vertical data forwarding
+- Pipeline draining using zero inputs
+- Verification of all four PE accumulators
+
+Result: All four output values matched the expected matrix product.
+
+Waveform: simulation/systolic_2x2_waveform.vcd
+Testbench: testbench/tb_systolic_2x2.v
+

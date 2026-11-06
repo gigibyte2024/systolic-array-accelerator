@@ -88,3 +88,31 @@ Test sequence:
 - Re-enable MAC and calculate 1 × 10 + 16 = 26
 
 Result: All six checks passed.
+
+## 2x2 PE Integration Verification
+
+A 2x2 arrangement of four Processing Elements was implemented
+and simulated.
+
+### Connections
+- PE00 forwards A to PE01.
+- PE00 forwards B to PE10.
+- PE10 forwards A to PE11.
+- PE01 forwards B to PE11.
+
+### Test Inputs
+A values: 2, 3
+B values: 5, 7
+
+### Expected Accumulator Results
+
+| Processing Element | Expected Result |
+|---|---:|
+| PE00 | 10 |
+| PE01 | 14 |
+| PE10 | 15 |
+| PE11 | 21 |
+
+Result: All forwarding and accumulator checks passed.
+
+Waveform: simulation/pe_2x2_waveform.vcd

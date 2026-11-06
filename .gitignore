@@ -9,3 +9,7 @@ mac_test
 
 # Editor files
 .vscode/
+
+# Compiled simulation executables
+pe_test
+pe_stress

@@ -161,6 +161,7 @@ module tb_controller_array_integration;
         // Verification of active COMPUTE window (3*N - 1 = 11 cycles for N=4)
         $display("[INFO] Starting computation across systolic array...");
         for (i = 0; i < (3 * N - 1); i = i + 1) begin
+            #1;
             if (array_en !== 1'b1) begin
                 $display("[FAIL] Cycle %0d: array_en is not asserted!", i);
                 errors = errors + 1;

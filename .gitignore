@@ -22,3 +22,9 @@ pe_overflow_test
 pe_2x2_test
 pe_back_to_back
 systolic_2x2_test
+# Member 3 simulation executables
+buffer_compile
+buffer_test
+matrix_compile
+matrix_test
+member3_integration

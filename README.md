@@ -40,13 +40,13 @@ systolic-array-accelerator/
 
 ## Team Contributions
 
-| Member | Responsibility |
-|---|---|
-| Member 1 | Processing Element and MAC Unit |
-| Member 2 | Systolic Array Architecture |
-| Member 3 | Input Buffers and Matrix Interface |
-| Member 4 | Systolic Array Controller |
-| Member 5 | Verification and Performance Analysis |
+| Member | Responsibility | Status |
+|---|---|---|
+| Member 1 | Processing Element and MAC Unit | Completed |
+| Member 2 | Systolic Array Architecture | Completed |
+| Member 3 | Input Buffers and Matrix Interface | Pending |
+| Member 4 | Systolic Array Controller | Completed |
+| Member 5 | Verification and Performance Analysis | In Progress |
 
 ## Project Status
 

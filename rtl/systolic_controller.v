@@ -2,7 +2,9 @@
 
 module systolic_controller #(
     parameter N = 4,                       // Matrix dimension (N x N)
-    parameter CNT_WIDTH = 8                // Cycle counter bit-width
+    // Cycle counter bit-width. Must hold 3N-2 (the last compute count).
+    // The default is sized from N so any array size works.
+    parameter CNT_WIDTH = $clog2(3 * N) + 1
 )(
     input  wire                   clk,
     input  wire                   rst_n,          // Active-low asynchronous/synchronous reset
@@ -22,6 +24,16 @@ module systolic_controller #(
     // TOTAL_CYCLES: Feed cycles + N cycles for pipeline flush/accumulation propagation = 3*N - 1
     localparam [CNT_WIDTH-1:0] FEED_CYCLES  = 2 * N - 1;
     localparam [CNT_WIDTH-1:0] TOTAL_CYCLES = 3 * N - 1;
+
+    // Stop with a clear error if CNT_WIDTH is too small for N; otherwise
+    // TOTAL_CYCLES would be truncated and the run would end early.
+    // synthesis translate_off
+    initial begin
+        if ((3 * N - 1) > (2 ** CNT_WIDTH - 1))
+            $fatal(1, "systolic_controller: CNT_WIDTH=%0d too small for N=%0d (needs to count to %0d)",
+                   CNT_WIDTH, N, 3 * N - 1);
+    end
+    // synthesis translate_on
 
     // FSM State Encoding
     localparam [2:0]

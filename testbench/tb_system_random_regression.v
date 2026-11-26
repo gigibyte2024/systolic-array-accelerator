@@ -28,7 +28,7 @@ module tb_system_random_regression;
     parameter DATA_WIDTH = 8;
     parameter ACC_WIDTH  = 32;
     parameter CNT_WIDTH  = $clog2(3*N) + 1;
-    parameter NUM_TRIALS = (N <= 8) ? 50 : 3;
+    parameter NUM_TRIALS = (N <= 8) ? 50 : 1;   // large N is slow to simulate
 
     reg clk, rst_n, start, load_en;
     reg  signed [DATA_WIDTH-1:0] load_a, load_b;

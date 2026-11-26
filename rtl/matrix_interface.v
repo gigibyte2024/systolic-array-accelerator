@@ -4,7 +4,7 @@
 module matrix_interface #(
     parameter N = 4,
     parameter DATA_WIDTH = 8,
-    parameter CNT_WIDTH = 8
+    parameter CNT_WIDTH = $clog2(3 * N) + 1   // same default as systolic_controller
 )(
     input wire buffer_rd_en,
     input wire [CNT_WIDTH-1:0] cycle_cnt,

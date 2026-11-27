@@ -37,12 +37,14 @@ implemented in Verilog. The accelerator is composed of five modules: a multiply-
 $N\times N$ systolic array generated from the PE, an input buffer with a skewed
 matrix-streaming interface, and a finite-state-machine (FSM) controller that sequences
 initialization, operand feeding, pipeline flushing and completion. Each module was verified
-independently, and the complete system was verified for $2\times2$, $3\times3$ and $4\times4$
-matrices, with every output matching a reference product. A multiplication of two
+independently, and the complete system was verified for array sizes from $2\times2$ to
+$100\times100$, with every output matching a reference product. A multiplication of two
 $N\times N$ matrices completes in $3N-1$ compute cycles, so the $4\times4$ configuration
 performs 64 MAC operations in 11 cycles, an average of 5.82 MAC operations per cycle and a
-$5.8\times$ cycle-count reduction relative to a single-MAC sequential implementation. All 16
-testbenches pass in Icarus Verilog simulation.
+$5.8\times$ cycle-count reduction relative to a single-MAC sequential implementation. An
+extended suite of randomized, extreme-value and protocol-stress tests exposed and fixed a
+controller counter overflow for $N\geq86$. All 26 testbenches pass in Icarus Verilog
+simulation.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -68,8 +70,8 @@ same RTL instantiates any array size;
 \item an input buffer and matrix interface that store both operand matrices and stream them
 into the array with the diagonal skew required for correct timing;
 \item an FSM controller that coordinates the buffer, the interface and the array; and
-\item a layered verification flow, from unit tests to full-system tests at three array
-sizes, together with a cycle-level performance analysis.
+\item a layered verification flow, from unit tests to randomized full-system and stress
+tests for arrays of up to $100\times100$, together with a cycle-level performance analysis.
 \end{itemize}
 
 \section{Literature Review}
@@ -254,9 +256,18 @@ product computed in the testbench, and checks the controller at every cycle: \te
 must match the expected count and \texttt{buffer\_rd\_en} must be high exactly during the feed
 window. The full-system test was run for $N=2$, $3$ and $4$.
 
+An extended suite then targets the conditions that machine-learning workloads create: the full
+signed INT8 range, large arrays, repeated runs and long accumulations. It covers extreme
+operands ($-128$ and $127$), zero and identity matrices, randomized regressions, a sweep of the
+array parameter up to $N=100$, back-to-back runs with and without reset, mid-run reset and
+enable gating, accumulator wrap-around, a randomized full-system regression and a controller
+protocol-stress test. Every extended test computes its reference inside the testbench, and
+each was also run against a deliberately broken design to confirm that it detects faults. A
+script runs the complete suite with one command.
+
 \section{Results}
 \subsection{Functional Verification}
-All 16 testbenches pass. In the full-system test every output matched the reference product
+All 26 testbenches pass. In the full-system test every output matched the reference product
 for all three array sizes (Table~\ref{tab:perf}). For $N=4$ the operands are
 \[
 A=\begin{bmatrix}-6&-1&4&-4\\1&6&-2&3\\-5&0&5&-3\\2&-6&-1&4\end{bmatrix},\;
@@ -316,11 +327,53 @@ $4\times4$ & 16 & 11 & 64 & 5.818 & $5.8\times$\\
 \end{tabular}
 \end{table}
 
+\subsection{Extended Verification and Findings}
+Table~\ref{tab:ext} summarizes the extended tests; all pass. They also produced the following
+findings.
+
+\emph{Controller counter width (fixed).} With the original fixed 8-bit \texttt{CNT\_WIDTH},
+the compute length $3N-1$ was truncated for $N\geq86$, so the controller ended runs early
+without any error, for example after 43 instead of 299 cycles at $N=100$. The default width is
+now $\lceil\log_2 3N\rceil+1$ bits, and a width that is too small stops the simulation with an
+error.
+
+\emph{Enable is not a stall.} \texttt{en} gates accumulation only; the forwarding registers
+shift every cycle. A one-cycle drop of \texttt{en} removes exactly the products scheduled in
+that cycle. The controller holds \texttt{en} high throughout \textsc{Compute}, so results are
+unaffected.
+
+\emph{Tiling and overflow.} Streaming two operand blocks without a reset produces
+$A_1B_1+A_2B_2$, so products along the inner dimension can be tiled. The 32-bit accumulator
+wraps after 131,072 products of $(-128)(-128)$, which bounds the safe tiled dot-product
+length.
+
+\begin{table}[t]
+\centering
+\caption{Extended Verification Summary}
+\label{tab:ext}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{1.15in}>{\raggedright\arraybackslash}p{1.95in}@{}}
+\toprule
+Test & Scope\\
+\midrule
+Extreme values & INT8 limits, including $(-128)(-128)$\\
+Special matrices & zero, identity, single nonzero pair\\
+Random regression & 500 random $4\times4$ products, 8,000 outputs\\
+Parameter sweep & $N=2,3,4,5,8$ and $100$ (10,000 PEs)\\
+Back-to-back & reset between runs, accumulation, $K=2N$ stream\\
+Reset and enable & mid-run reset, \texttt{en} low, one-cycle drop\\
+Accumulator wrap & 32-bit and 16-bit wrap-around\\
+Full-system random & random loads and restarts, $N$ up to 100\\
+Controller stress & illegal and repeated \texttt{start}, async reset in every state\\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Limitations}
 The results are cycle counts from RTL simulation. The design has not been synthesized, so
 area, maximum clock frequency and power have not been measured. Accumulator overflow wraps
-around rather than saturating, and the array processes one $N\times N$ product at a time
-without tiling for larger matrices.
+around rather than saturating, \texttt{en} cannot stall the pipeline, the input buffer accepts
+one pair of matrices per reset, and no controller yet tiles matrices larger than the array.
 
 \section{Individual Contributions}
 The accelerator was partitioned into five blocks with defined interfaces so that members could
@@ -337,7 +390,7 @@ Table~\ref{tab:contrib} and are reflected in the commit history of the project r
 Member & Contribution\\
 \midrule
 Gargi & MAC unit and processing element (\texttt{mac\_unit.v}, \texttt{processing\_element.v}); width parameterization; MAC, PE, stress, overflow, back-to-back and $2\times2$ integration testbenches; PE interface specification.\\
-Agrima & Parameterized $N\times N$ systolic array (\texttt{systolic\_array.v}) with generate-based PE mesh and flattened ports; $4\times4$ array integration testbench; array architecture documentation and verification report.\\
+Agrima & Parameterized $N\times N$ systolic array (\texttt{systolic\_array.v}) with generate-based PE mesh and flattened ports; $4\times4$ array integration testbench; extended verification suite (extreme-value, random, parameter-sweep to $100\times100$, back-to-back, reset/enable, wrap-around, full-system random and controller-stress tests) and regression script; controller counter-width fix; array documentation and verification report.\\
 Bhawana & Input buffer and skewed matrix interface (\texttt{input\_buffer.v}, \texttt{matrix\_interface.v}); buffer, interface and integration testbenches; design report and waveforms.\\
 Deepak & FSM controller (\texttt{systolic\_controller.v}); controller unit testbench and controller--array integration testbench; controller architecture and interface specification.\\
 Dev & Full-system verification testbench for $N=2$, $3$, $4$ with per-cycle control checks; performance analysis of latency and throughput; verification and performance report.\\
@@ -349,10 +402,11 @@ Dev & Full-system verification testbench for $N=2$, $3$, $4$ with per-cycle cont
 This project implemented and verified a parameterized output-stationary systolic array
 accelerator for signed matrix multiplication in Verilog. The modular design (MAC unit, PE,
 array, buffered skewed interface and FSM controller) computes an $N\times N$ product in
-$3N-1$ compute cycles and passed all unit, integration and full-system tests for $N$ up to 4.
-Planned extensions are FPGA synthesis to obtain area, frequency and power figures, tiling to
-multiply matrices larger than the array, overlapping consecutive multiplications to hide fill
-and drain latency, saturating arithmetic, and a comparison with a weight-stationary variant.
+$3N-1$ compute cycles and passed all unit, integration, full-system and stress tests for $N$
+up to 100. Planned extensions are FPGA synthesis to obtain area, frequency and power figures,
+a tiling controller for matrices larger than the array, overlapping consecutive
+multiplications to hide fill and drain latency, a true pipeline stall, saturating arithmetic
+or an overflow flag, and a comparison with a weight-stationary variant.
 
 \begin{thebibliography}{10}
 \bibitem{kung1979}

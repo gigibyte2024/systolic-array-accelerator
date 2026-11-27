@@ -53,7 +53,16 @@ The `systolic_controller` is a parameterised Finite State Machine (FSM) that orc
 4. **`S_DONE` (3'b011):**
    - Asserts `done = 1` and deasserts `busy = 0`.
    - Results in `acc_out` are valid and ready to be read.
+   - `cycle_cnt` shows $3N - 1$, the total number of compute cycles (the counter
+     still increments on the clock edge that leaves `S_COMPUTE`).
    - Returns to `S_IDLE` on the following cycle.
+
+## Parameters
+
+| Parameter | Default | Description |
+|---|---|---|
+| `N` | 4 | Matrix dimension (N x N) |
+| `CNT_WIDTH` | `$clog2(3*N) + 1` | Cycle counter width. It must be able to hold $3N - 1$; the default is sized from `N`, so any array size works. If a smaller value is passed, simulation stops with an error instead of ending the run early. |
 
 ## Interface Ports
 
@@ -68,7 +77,7 @@ The `systolic_controller` is a parameterised Finite State Machine (FSM) that orc
 | `buffer_rd_en` | Output | 1 | Read enable strobe to Member 3 buffers |
 | `done` | Output | 1 | Computation complete flag |
 | `busy` | Output | 1 | Controller active status flag |
-| `cycle_cnt` | Output | CNT_WIDTH | Step counter ($0$ to $3N-2$) |
+| `cycle_cnt` | Output | CNT_WIDTH | Step counter: $0$ to $3N-2$ in `S_COMPUTE`, $3N-1$ in `S_DONE`, $0$ otherwise |
 
 ## Integration with Other Members
 - **Member 2 (Systolic Array):** Directly drives `u_array.rst` and `u_array.en`.
